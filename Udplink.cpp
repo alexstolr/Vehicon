@@ -9,6 +9,7 @@
 
 Udplink::Udplink()
 {
+    std::cout<<__FUNCTION__ << ": initiated Udplink"  << std::endl;
     if((udpSoc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) //was PF
     {
         perror("cannot create socket");
@@ -39,8 +40,9 @@ Udplink::~Udplink() {
 
 int Udplink::readDatagram() {
     unsigned slen=sizeof(sockaddr);
+    std::cout << __FUNCTION__ << ": waiting for datagram" << std::endl;
     int bytesRead = recvfrom(udpSoc, dataGram, sizeof(dataGram)-1, 0, (sockaddr *)&dstAddr, &slen);
-    printf("message receive: %s\n", dataGram);
+    printf("message received: %s\n", dataGram);
     return bytesRead;
 }
 

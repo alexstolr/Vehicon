@@ -25,6 +25,7 @@ private:
     Udplink * udplink;
 
     //Functions
+    void init();
     void handleIncomingConnections();
     void handleOutgoingConnections();
 
@@ -32,7 +33,6 @@ private:
 public:
     Vehicon();
     virtual ~Vehicon();
-    void init();
 
     bool isTerminate() const;
     void setTerminate(bool terminate);

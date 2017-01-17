@@ -11,7 +11,7 @@
 
 Lpr::Lpr() : foundPLate(false)
 {
-    std::cout << "Lpr created!" << std::endl;
+    std::cout<<__FUNCTION__ << ": initiated Lpr"  << std::endl;
 }
 
 Lpr::~Lpr()

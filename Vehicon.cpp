@@ -14,7 +14,7 @@
 
 Vehicon::Vehicon() : terminate(false)
 {
-    std::cout<<"Initiated Vehicon!" << std::endl;
+    std::cout<<__FUNCTION__ << ": initiated Vehicon"  << std::endl;
     lpr = new Lpr();
     udplink = new Udplink();
     init();
@@ -23,15 +23,22 @@ Vehicon::Vehicon() : terminate(false)
 Vehicon::~Vehicon()
 {
     delete lpr;
+    delete udplink;
 }
 
+/**
+ * Runs two threads -
+ * 1. Thread for trying to recognize license plate from camera and try start a connection.
+ * 2. Try get a datagram from other Vehicle that tries to start a connection with us.
+ */
 void Vehicon::init()
 {
-    std::thread t1(&Vehicon::handleIncomingConnections, this);
-    //std::thread lprThread (&this->handleOutgoingConnections);
-    //std::thread udpListenThread (&this->handleIncomingConnections);
-    //lprThread.join();
-    //udpListenThread.join();
+//    std::thread t1(&Vehicon::handleIncomingConnections,this);
+//    t1.join();
+    std::thread lprThread (&Vehicon::handleOutgoingConnections,this);
+    std::thread udpListenThread (&Vehicon::handleIncomingConnections,this);
+    lprThread.join();
+    udpListenThread.join();
 
 }
 
@@ -42,7 +49,7 @@ bool Vehicon::isTerminate() const
 
 void Vehicon::setTerminate(bool terminate)
 {
-    Vehicon::terminate = terminate;
+    this->terminate = terminate;
 }
 
 void Vehicon::handleOutgoingConnections()
@@ -57,7 +64,15 @@ void Vehicon::handleIncomingConnections()
 {
     while(!udplink->readDatagram())
     {
-
+//        if(udplink->readDatagram())
+//        {
+//            std::cout << "Waiting for data over udp" << std::endl;
+//        }
+//        else
+//        {
+//            std::cout << "didnt get dataover udp" << std::endl;
+//        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 }
 

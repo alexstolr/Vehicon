@@ -6,8 +6,7 @@
 #include <iostream>
 #include <thread>
 #include "Vehicon.h"
-
-//#define DEBUG_MAIN
+#define DEBUG_ALL
 
 
 int main()
