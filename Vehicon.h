@@ -15,6 +15,7 @@
 #include <thread>
 #include "Lpr.h"
 #include "Udplink.h"
+#include "Protocol.h"
 
 class Vehicon {
 
@@ -23,6 +24,8 @@ private:
     bool terminate;
     Lpr * lpr;
     Udplink * udplink;
+    Protocol * protocol;
+
 
     //Functions
     void init();

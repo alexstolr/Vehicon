@@ -14,16 +14,19 @@
 
 Vehicon::Vehicon() : terminate(false)
 {
-    std::cout<<__FUNCTION__ << ": initiated Vehicon"  << std::endl;
+    std::cout<<__FUNCTION__ << ": initiated Vehicon \n"  << std::endl;
     lpr = new Lpr();
     udplink = new Udplink();
+    protocol = new Protocol(udplink);
     init();
 }
 
 Vehicon::~Vehicon()
 {
     delete lpr;
+    delete protocol;
     delete udplink;
+
 }
 
 /**
@@ -33,8 +36,6 @@ Vehicon::~Vehicon()
  */
 void Vehicon::init()
 {
-//    std::thread t1(&Vehicon::handleIncomingConnections,this);
-//    t1.join();
     std::thread lprThread (&Vehicon::handleOutgoingConnections,this);
     std::thread udpListenThread (&Vehicon::handleIncomingConnections,this);
     lprThread.join();
@@ -54,9 +55,17 @@ void Vehicon::setTerminate(bool terminate)
 
 void Vehicon::handleOutgoingConnections()
 {
+    std::string tmpPlate = "";
     while(!lpr->isFoundPLate())
     {
-        lpr->findPlates();
+        if((tmpPlate = lpr->findPlates()) != "")
+        {
+            std::cout << "Plate number: " << tmpPlate << std::endl;
+            char * tmpPlateChar = new char[tmpPlate.length() + 1];
+            strcpy(tmpPlateChar, tmpPlate.c_str());
+            protocol->startCommunication(tmpPlateChar);
+            delete [] tmpPlateChar;
+        }
     }
 }
 

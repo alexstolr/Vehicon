@@ -9,7 +9,7 @@
 #define DEBUG_ALL
 
 
-int main()
+int main(int argc, char * argv[])
 {
     Vehicon * vehicon = new Vehicon();
     delete vehicon;

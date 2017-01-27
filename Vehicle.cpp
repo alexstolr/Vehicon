@@ -1,5 +1,5 @@
 /**
- * @brief Repsents a Vehicle and holds its identifiers
+ * @brief Represents a Vehicle and holds its identifiers
  * eg license plate, certifiate, Public and Private key(for now this is not done correctly)
  * @author Alex Stoliar (alexstolr@gmail.com)
  * @date 08/01/2017
