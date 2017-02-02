@@ -89,7 +89,7 @@ void Vehicon::handleIncomingConnections()
 //        }
 //        else
 //        {
-//            std::cout << "didnt get dataover udp" << std::endl;
+//            std::cout << "didnt get data over udp" << std::endl;
 //        }
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }

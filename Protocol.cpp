@@ -15,7 +15,7 @@
 
 #include "Protocol.h"
 
-//#define DEBUG_PROTOCOL
+#define DEBUG_PROTOCOL
 
 Protocol::Protocol(Udplink * udplink)
 {
@@ -42,7 +42,7 @@ void Protocol::msgPack(int opCode,char * plateNum)
     switch (opCode)
     {
         case INIT_VERIFICATION:
-            initVerify();
+            udplink->writeDatagram(initVerify());
             break;
         case CONT_VERIFICATION:
             break;
@@ -58,7 +58,7 @@ void Protocol::msgPack(int opCode,char * plateNum)
  * by sending the recognized peer an INIT_VERIFICATION MESSAGE which includes
  * local certificate & public key.
  */
-void Protocol::initVerify()
+char * Protocol::initVerify()
 {
     uint8_t buf[25] = {0};
     buf[0] = 0xFE;
@@ -68,8 +68,8 @@ void Protocol::initVerify()
     buf[4] = INIT_VERIFICATION;
     for (int i = 0; i < 8; i++)
     {
-        buf[i + 5] = cert[i];
-        buf[i + 13] = pubKey[i];
+        buf[i + 5] = vehicleSelf->getCert()[i]; //TODO wasteful! change this later.
+        buf[i + 13] = vehicleSelf->getPubKey()[i];
     }
     uint32_t crcVal = crc->calcCrc((char *)buf,21);
     buf[21] = (crcVal >> 24) & 0xFF;
@@ -81,9 +81,10 @@ void Protocol::initVerify()
     printf("MSG: ");
     for (int i = 0; i < 25; i++)
     {
-        printf("%X ",buf[i]);
+        printf("%0X ",buf[i]);
     }
     printf("\n");
+    return (char *)buf;
 #endif
 }
 

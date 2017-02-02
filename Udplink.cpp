@@ -48,7 +48,7 @@ int Udplink::readDatagram() {
 
 int Udplink::writeDatagram(char * datagram)
 {
-    std::cout << "Trying to receive datagram..." << std::endl;
+    std::cout << "Writing data  " <<  std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     return sendto(udpSoc, datagram, sizeof(datagram)-1, 0, (struct sockaddr*)&locAddr, sizeof(struct sockaddr_in));
 }
