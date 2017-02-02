@@ -40,6 +40,7 @@ public:
     bool isTerminate() const;
     void setTerminate(bool terminate);
 
+    void runCameraStream();
 };
 
 

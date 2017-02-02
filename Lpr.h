@@ -31,6 +31,7 @@ private:
     std::string runOpenAlprOnStill();
     std::string runOpenAlprOnVideo();
     std::string runOPenAlprOnImgFile();
+    void runCameraStream();
 };
 
 

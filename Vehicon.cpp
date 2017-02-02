@@ -12,6 +12,8 @@
 #include "Vehicon.h"
 #include "Lpr.h"
 
+#define CAMERA_STREAM
+
 Vehicon::Vehicon() : terminate(false)
 {
     std::cout<<__FUNCTION__ << ": initiated Vehicon \n"  << std::endl;
@@ -36,10 +38,18 @@ Vehicon::~Vehicon()
  */
 void Vehicon::init()
 {
-    std::thread lprThread (&Vehicon::handleOutgoingConnections,this);
-    std::thread udpListenThread (&Vehicon::handleIncomingConnections,this);
-    lprThread.join();
-    udpListenThread.join();
+    std::thread lprOutgoingConnectionsThread (&Vehicon::handleOutgoingConnections,this);
+    std::thread udpIncomingConnectionsThread (&Vehicon::handleIncomingConnections,this);
+
+    #ifdef CAMERA_STREAM
+    //std::thread videoStreamThread (&Vehicon::runCameraStream,this);
+    //videoStreamThread.join();
+    //std::cout<<__FUNCTION__ << ": initiated camera stream"  << std::endl;
+    //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    #endif
+
+    lprOutgoingConnectionsThread.join();
+    udpIncomingConnectionsThread.join();
 
 }
 
@@ -82,6 +92,28 @@ void Vehicon::handleIncomingConnections()
 //            std::cout << "didnt get dataover udp" << std::endl;
 //        }
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    }
+}
+
+void Vehicon::runCameraStream()
+{
+    cv::VideoCapture cap(1); // open usb camera
+    if(!cap.isOpened())  // check if we succeeded
+    {
+        std::cerr << "Error Opening Video Camera" << std::endl;
+    }
+
+    cv::Mat edges;
+    cv::namedWindow("edges",1);
+    while(true)
+    {
+        cv::Mat frame;
+        cap >> frame; // get a new frame from camera
+        //cvtColor(frame, edges, 0);
+        //GaussianBlur(edges, edges, cv::Size(7,7), 1.5, 1.5);
+        //Canny(edges, edges, 0, 30, 3);
+        cv::imshow("edges", frame);
+        if(cv::waitKey(30) >= 0) break;
     }
 }
 

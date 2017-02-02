@@ -9,8 +9,10 @@
 
 #define MAX_PLATE_NUMBER (50)
 #define OPENALPRCONF "libs/openalpr/src/config/openalpr.conf"
-#define CAMERA_MODE "TEST"//"STILL", "VIDEO", "TEST"
+#define CAMERA_MODE "VIDEO"//"STILL", "VIDEO", "TEST"
+#define CAMERA_STREAM
 #define CONFIDENCE_LEVEL 90
+#define FRAME_TO_PIC_RATIO 17 // 30*17 ~= 500 --> save to file every half a second
 
 
 Lpr::Lpr() : foundPLate(false),openalpr(alpr::Alpr("eu", OPENALPRCONF))
@@ -78,31 +80,131 @@ std::string Lpr::runOpenALPR()
     }
 }
 
+/**
+ * For now i am saving the frame as a local image and runnung alpr on the image
+ * until i figure out how to run openalpr on frame in real time.
+ * @return
+ */
 std::string Lpr::runOpenAlprOnStill()
 {
+    cv::VideoCapture cap(1); // open usb camera
+    if(!cap.isOpened())  // check if we succeeded
+    {
+        std::cerr << "Error Opening Video Camera" << std::endl;
+    }
+    std::string tmpStr = "";
+    cv::Mat edges;
+    cv::namedWindow("edges",1);
+    int frameToPicRatio = 0;
+    while(!foundPLate)
+    {
+        frameToPicRatio++;
+        frameToPicRatio = frameToPicRatio%FRAME_TO_PIC_RATIO;
+        cv::Mat frame;
+        cap >> frame; // get a new frame from camera
+        //cvtColor(frame, edges, 0);
+        //GaussianBlur(edges, edges, cv::Size(7,7), 1.5, 1.5);
+        //Canny(edges, edges, 0, 30, 3);
+        if(frameToPicRatio == 1)
+        {
+            cv::imwrite("/home/alex/Workspace/Vehicon/include/images/tmp.jpg", frame); //TODO figure out better path
+        }
+        tmpStr = runOPenAlprOnImgFile();
+        if(tmpStr != "")
+            break;
+        std::cout << tmpStr << std::endl;
+        cv::imshow("edges", frame);
+        if(cv::waitKey(30) >= 0) break;
+    }
 
 }
 
 std::string Lpr::runOpenAlprOnVideo()
 {
+    cv::VideoCapture cap(1); // open usb camera
+    if(!cap.isOpened())  // check if we succeeded
+    {
+        std::cerr << "Error Opening Video Camera" << std::endl;
+    }
+    std::string tmpStr = "";
+    int frameToPicRatio = 0;
+    cv::Mat edges;
+    cv::namedWindow("edges",1);
+    while(!foundPLate)
+    {
+        frameToPicRatio++;
+        frameToPicRatio = frameToPicRatio%FRAME_TO_PIC_RATIO;
+        cv::Mat frame;
+        cap >> frame; // get a new frame from camera
+        if(frameToPicRatio == 1)
+        {
+            alpr::AlprResults results = openalpr.recognize(frame);
+            if(results.plates.size() != 0)
+            {
+                alpr::AlprPlateResult plate = results.plates[0];
+                alpr::AlprPlate candidate = plate.topNPlates[0];
+                if(candidate.overall_confidence >= CONFIDENCE_LEVEL)
+                {
+                    std::string peerPlate = candidate.characters;
+                    std::cout << "License Plate: " << peerPlate << "\t confidence: " << candidate.overall_confidence;
+                    std::cout << "\t pattern_match: " << candidate.matches_template << std::endl;
+                    foundPLate = true;
+                    return peerPlate;
+                }
+                return "";
+            }
+        }
+        //cvtColor(frame, edges, 0);
+        //GaussianBlur(edges, edges, cv::Size(7,7), 1.5, 1.5);
+        //Canny(edges, edges, 0, 30, 3);
+        cv::imshow("edges", frame);
+        if(cv::waitKey(30) >= 0) break;
+    }
 
 }
 
 std::string Lpr::runOPenAlprOnImgFile()
 {
-    alpr::AlprResults results = openalpr.recognize("/home/alex/Workspace/Vehicon/include/images/3.jpg");
+    alpr::AlprResults results = openalpr.recognize("/home/alex/Workspace/Vehicon/include/images/tmp.jpg"); //TODO figure out better path
     //Need only one plate for POC
-    alpr::AlprPlateResult plate = results.plates[0];
-    alpr::AlprPlate candidate = plate.topNPlates[0];
-    if(candidate.overall_confidence >= CONFIDENCE_LEVEL)
+    if(results.plates.size() != 0)
     {
-        std::string peerPlate = candidate.characters;
-        std::cout << "License Plate: " << peerPlate << "\t confidence: " << candidate.overall_confidence;
-        std::cout << "\t pattern_match: " << candidate.matches_template << std::endl;
-        foundPLate = true;
-        return peerPlate;
+        alpr::AlprPlateResult plate = results.plates[0];
+        alpr::AlprPlate candidate = plate.topNPlates[0];
+        if(candidate.overall_confidence >= CONFIDENCE_LEVEL)
+        {
+            std::string peerPlate = candidate.characters;
+            std::cout << "License Plate: " << peerPlate << "\t confidence: " << candidate.overall_confidence;
+            std::cout << "\t pattern_match: " << candidate.matches_template << std::endl;
+            foundPLate = true;
+            return peerPlate;
+        }
+        return "";
     }
     return "";
+
+}
+
+void Lpr::runCameraStream()
+{
+    cv::VideoCapture cap(1); // open usb camera
+    if(!cap.isOpened())  // check if we succeeded
+    {
+        std::cerr << "Error Opening Video Camera" << std::endl;
+    }
+
+    cv::Mat edges;
+    cv::namedWindow("edges",1);
+    while(true)
+    {
+        cv::Mat frame;
+        cap >> frame; // get a new frame from camera
+        //cvtColor(frame, edges, 0);
+        //GaussianBlur(edges, edges, cv::Size(7,7), 1.5, 1.5);
+        //Canny(edges, edges, 0, 30, 3);
+        cv::imshow("edges", frame);
+        if(cv::waitKey(30) >= 0) break;
+    }
 }
 
 
