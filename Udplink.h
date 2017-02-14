@@ -2,6 +2,8 @@
  * @brief Handles incoming datagrams and writing data to peers.
  * @author Alex Stoliar (alexstolr@gmail.com)
  * @date 08/01/2017
+ * @details: http://www.linuxhowtos.org/C_C++/socket.htm
+ *           http://www.binarytides.com/programming-udp-sockets-c-linux/
  */
 
 #ifndef VEHICON_UDPLINK_H
@@ -31,7 +33,7 @@ public:
 
 private:
     int udpSoc; //  udp socket file descriptor
-    char dataGram[1024];
+    //char dataGram[1024];
     int broadcast = 1;
     struct sockaddr_in locAddr, dstAddr;
     char buffer[BUF_SIZE] = {0};   //Stores received data. Initiated to 0's

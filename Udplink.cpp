@@ -1,11 +1,16 @@
-//
-// Created by alex on 08/01/17.
-//
+/**
+ * @brief Handles incoming datagrams and writing data to peers.
+ * @author Alex Stoliar (alexstolr@gmail.com)
+ * @date 08/01/2017
+ * @details: http://www.linuxhowtos.org/C_C++/socket.htm
+ *           http://www.binarytides.com/programming-udp-sockets-c-linux/
+ */
 
 #include "Udplink.h"
 
 #include <iostream>
 #include <thread>
+#define DEBUG_UDPLINK
 
 Udplink::Udplink()
 {
@@ -39,16 +44,38 @@ Udplink::~Udplink() {
 }
 
 int Udplink::readDatagram() {
+    char datagram[32] = {0};
     unsigned slen=sizeof(sockaddr);
-    std::cout << __FUNCTION__ << ": waiting for datagram" << std::endl;
-    int bytesRead = recvfrom(udpSoc, dataGram, sizeof(dataGram)-1, 0, (sockaddr *)&dstAddr, &slen);
-    printf("message received: %s\n", dataGram);
+    //int bytesRead = 0;
+    int bytesRead = recvfrom(udpSoc, datagram, sizeof(datagram)-1, 0, (sockaddr *)&dstAddr, &slen);
+    //int bytesRead = recv(udpSoc, datagram, 32, 0);
+//    for (int j = 0; j < 25; ++j) {
+//        bytesRead += recvfrom(udpSoc, &datagram[j], 1, 0, (sockaddr *)&dstAddr, &slen);
+//
+//    }
+    std::cout << sizeof(datagram) << std::endl;
+#ifdef DEBUG_UDPLINK
+    printf("MSG received: ");
+    for (int i = 0; i < 25; i++)
+    {
+        printf("%0X ",(uint8_t)datagram[i]);
+    }
+    printf("\n");
+#endif
     return bytesRead;
 }
 
 int Udplink::writeDatagram(char * datagram)
 {
-    std::cout << "Writing data  " <<  std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-    return sendto(udpSoc, datagram, sizeof(datagram)-1, 0, (struct sockaddr*)&locAddr, sizeof(struct sockaddr_in));
+    //std::cout << "Writing data: " << datagram << std::endl;
+    //std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+#ifdef DEBUG_UDPLINK
+    printf("MSG sent: ");
+    for (int i = 0; i < 25; i++)
+    {
+        printf("%0X ",(uint8_t)datagram[i]);
+    }
+    printf("\n");
+#endif
+    return sendto(udpSoc, datagram, 25/*sizeof(datagram)-1*/, 0, (struct sockaddr*)&locAddr, sizeof(struct sockaddr_in));
 }

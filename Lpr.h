@@ -1,5 +1,8 @@
 /**
  * @brief This class provides License plate recognition.
+ * I have made small changes in openALPR to provide real time lpr on video stream.
+ * to make this work you need to change the .so file of openALPR.
+ * I have writen a script to do this automatically after i make changes in openALPR source code.
  * @author Alex Stoliar (alexstolr@gmail.com)
  * @date 08/01/2017
  */

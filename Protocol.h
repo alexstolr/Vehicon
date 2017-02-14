@@ -48,7 +48,7 @@ private:
 
 
     void msgPack(int opCode, char * plateNUm);
-    char * initVerify();
+    void initVerify(char * buf, char * plateNum);
     void contVerify();
     void msgUnpack(char * msg);
 };

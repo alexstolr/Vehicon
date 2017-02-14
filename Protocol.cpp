@@ -14,6 +14,7 @@
  */
 
 #include "Protocol.h"
+#include <iostream>
 
 #define DEBUG_PROTOCOL
 
@@ -39,16 +40,24 @@ void Protocol::init()
 
 void Protocol::msgPack(int opCode,char * plateNum)
 {
+    if(opCode == INIT_VERIFICATION)
+    {
+        char buf[32] = {0};
+        initVerify(buf,plateNum);
+        udplink->writeDatagram(buf);
+    }
+    /*
     switch (opCode)
     {
         case INIT_VERIFICATION:
-            udplink->writeDatagram(initVerify());
+            tmp = initVerify();
+            udplink->writeDatagram(tmp);
             break;
         case CONT_VERIFICATION:
             break;
         default:
             break;
-    }
+    }*/
 
 }
 
@@ -58,9 +67,9 @@ void Protocol::msgPack(int opCode,char * plateNum)
  * by sending the recognized peer an INIT_VERIFICATION MESSAGE which includes
  * local certificate & public key.
  */
-char * Protocol::initVerify()
+void Protocol::initVerify(char * buf, char * plateNum)
 {
-    uint8_t buf[25] = {0};
+    //char buf[25] = {0};
     buf[0] = 0xFE;
     buf[1] = (sequence >> 8) & 0xFF;
     buf[2] = sequence & 0xFF;
@@ -81,11 +90,11 @@ char * Protocol::initVerify()
     printf("MSG: ");
     for (int i = 0; i < 25; i++)
     {
-        printf("%0X ",buf[i]);
+        printf("%0X ",(uint8_t)buf[i]);
     }
     printf("\n");
-    return (char *)buf;
 #endif
+    //return &buf[0];
 }
 
 /**
