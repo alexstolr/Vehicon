@@ -12,7 +12,7 @@
 #define CAMERA_MODE "VIDEO"//"STILL", "VIDEO", "TEST"
 #define CAMERA_STREAM
 #define CONFIDENCE_LEVEL 90
-#define FRAME_TO_PIC_RATIO 17 // 30*17 ~= 500 --> save to file every half a second
+#define FRAME_TO_PIC_RATIO 4 // 30*17 ~= 500 --> save to file every half a second
 
 
 Lpr::Lpr() : foundPLate(false),openalpr(alpr::Alpr("eu", OPENALPRCONF))

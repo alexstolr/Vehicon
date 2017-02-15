@@ -8,7 +8,8 @@ set(SOURCE_FILES main.cpp Vehicon.cpp Vehicon.h Lpr.cpp Lpr.h Udplink.cpp Udplin
 add_executable(Vehicon ${SOURCE_FILES})
 
 find_package(OpenCV REQUIRED) #OpenCV
+find_package(OpenSSL REQUIRED)
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib) #OpenALPR
-include_directories($(OpenCV_INCLUDE_DIRS)) #OpenCV
+include_directories($(OpenCV_INCLUDE_DIRS) ${OPENSSL_INCLUDE_DIR}) #OpenCV
 
-target_link_libraries(Vehicon -lpthread ${OpenCV_LIBS} libopenalpr.so) #Threads
+target_link_libraries(Vehicon -lpthread ${OpenCV_LIBS} ${OPENSSL_LIBRARIES} libopenalpr.so) #Threads

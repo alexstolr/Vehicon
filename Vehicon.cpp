@@ -17,6 +17,8 @@
 Vehicon::Vehicon() : terminate(false)
 {
     std::cout<<__FUNCTION__ << ": initiated Vehicon \n"  << std::endl;
+    vehicle = new Vehicle();
+    vssl = new Vssl(vehicle);
     lpr = new Lpr();
     udplink = new Udplink();
     protocol = new Protocol(udplink);

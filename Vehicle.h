@@ -9,6 +9,8 @@
 #define VEHICON_VEHICLE_H
 
 #include <stdint.h>
+#include <openssl/pem.h>
+#include <openssl/x509v3.h>
 
 
 class Vehicle {
@@ -28,6 +30,19 @@ private:
     uint8_t plateNum[8] =    {4,6,7,3,5,5,2,0};
     uint8_t brand[6] =     {'t','o','y','o','t','a'};
     uint8_t model[6] =     {'c','o','r','o','l','a'};
+
+    X509 * x509Cert;
+public:
+    X509 *getX509Cert() const;
+
+    void setX509Cert(X509 *x509Cert);
+
+    EVP_PKEY *getPkey() const;
+
+    void setPkey(EVP_PKEY *pkey);
+
+private:
+    EVP_PKEY * pkey; //Private and public key struct
 };
 
 

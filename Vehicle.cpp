@@ -24,3 +24,19 @@ const uint8_t *Vehicle::getPubKey() const {
 const uint8_t *Vehicle::getPlateNum() const {
     return plateNum;
 }
+
+X509 *Vehicle::getX509Cert() const {
+    return x509Cert;
+}
+
+void Vehicle::setX509Cert(X509 *x509Cert) {
+    Vehicle::x509Cert = x509Cert;
+}
+
+EVP_PKEY *Vehicle::getPkey() const {
+    return pkey;
+}
+
+void Vehicle::setPkey(EVP_PKEY *pkey) {
+    Vehicle::pkey = pkey;
+}

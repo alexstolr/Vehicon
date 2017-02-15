@@ -16,12 +16,15 @@
 #include "Lpr.h"
 #include "Udplink.h"
 #include "Protocol.h"
+#include "Vssl.h"
 
 class Vehicon {
 
 private:
 
     bool terminate;
+    Vehicle * vehicle;
+    Vssl * vssl;
     Lpr * lpr;
     Udplink * udplink;
     Protocol * protocol;

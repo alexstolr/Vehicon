@@ -13,7 +13,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Vssl.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Crc32.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Vehicon.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Vehiconssl.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Vehiconssl.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Vehicle.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Vehicle.cpp" isTestSource="false" />
